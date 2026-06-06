@@ -1,2 +1,13 @@
-# PY-03_Dise-o-Software-Lim-Pieza
-Este es el ultimo proyecto del curso de Diseño de software donde deberemos recrear la aplicacion que planteamos en el PY01. En nuestro caso una web de Limpieza para que el publico pueda solicitar limpieza a domicilio.
+# LimPieza
+
+Proyecto web desarrollado con React, Vite y TypeScript.
+
+## Estado actual
+
+Push 1: inicialización del proyecto base.
+
+## Ejecutar el proyecto
+
+```bash
+npm install
+npm run dev
