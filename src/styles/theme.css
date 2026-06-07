@@ -1,0 +1,58 @@
+:root {
+  --color-fondo: #f4f7fb;
+  --color-superficie: #ffffff;
+  --color-texto: #1f2937;
+  --color-texto-secundario: #4b5563;
+  --color-primario: #2563eb;
+  --color-borde: #dbe3ef;
+
+  --radio-grande: 24px;
+  --sombra-suave: 0 24px 80px rgba(15, 23, 42, 0.12);
+}
+
+body {
+  color: var(--color-texto);
+  background: var(--color-fondo);
+}
+
+.app {
+  min-height: 100vh;
+}
+
+.contenedor-principal {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.tarjeta-presentacion {
+  width: min(100%, 760px);
+  padding: 2.5rem;
+  border-radius: var(--radio-grande);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-suave);
+  border: 1px solid var(--color-borde);
+}
+
+.texto-etiqueta {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primario);
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1;
+}
+
+p {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--color-texto-secundario);
+}

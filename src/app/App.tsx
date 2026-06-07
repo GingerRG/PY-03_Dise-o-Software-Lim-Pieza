@@ -1,15 +1,17 @@
 export default function App() {
   return (
-    <main className="pagina-inicial">
-      <section className="tarjeta-inicial">
-        <p className="etiqueta">LimPieza</p>
+    <main className="app app--inicio">
+      <section className="contenedor-principal">
+        <div className="tarjeta-presentacion">
+          <p className="texto-etiqueta">LimPieza</p>
 
-        <h1>Gestión de solicitudes de limpieza</h1>
+          <h1>Solicitudes de limpieza en línea</h1>
 
-        <p>
-          Esto es un test del proyecto,
+          <p>
+            Esto es un test del proyecto,
           probando fuentes, colores e interfaz funcional.
-        </p>
+          </p>
+        </div>
       </section>
     </main>
   );
