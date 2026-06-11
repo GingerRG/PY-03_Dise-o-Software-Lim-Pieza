@@ -1,0 +1,5 @@
+:root {
+  --font-sans: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-heading: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, Consolas, "Courier New", monospace;
+}

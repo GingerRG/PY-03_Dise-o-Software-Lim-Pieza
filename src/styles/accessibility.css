@@ -1,0 +1,39 @@
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.25);
+}
+
+html.reducir-movimiento *,
+html.reducir-movimiento *::before,
+html.reducir-movimiento *::after,
+body.reducir-movimiento *,
+body.reducir-movimiento *::before,
+body.reducir-movimiento *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+html.reducir-movimiento *,
+body.reducir-movimiento * {
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  * {
+    transform: none !important;
+  }
+}
