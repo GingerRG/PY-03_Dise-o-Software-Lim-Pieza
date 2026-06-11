@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useState } from "react";
 import { Tarjeta } from "../components/Tarjeta";
 import { Boton } from "../components/Boton";
 import { EtiquetaEstado } from "../components/EtiquetaEstado";
 import { FondoBurbujas } from "../components/FondoBurbujas";
-import { Sparkles, Calendar, AlertCircle, MessageCircle, Eye } from "lucide-react";
-import { motion } from "motion/react";
+import { Calendar, AlertCircle, MessageCircle, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 
 type Estado = "Pendiente" | "Cotizada" | "Confirmada" | "Completada" | "Cancelada";
 
@@ -23,28 +21,10 @@ interface Reserva {
 }
 
 export function PanelEmpresa() {
-  const navigate = useNavigate();
   const [estadoSeleccionado, setEstadoSeleccionado] = useState<string>("todos");
   const [reservaSeleccionada, setReservaSeleccionada] = useState<Reserva | null>(null);
-  const [mostrarMenu, setMostrarMenu] = useState(true);
-  const [ultimoScrollY, setUltimoScrollY] = useState(0);
-
-  useEffect(() => {
-    const manejarScroll = () => {
-      const scrollActual = window.scrollY;
-
-      if (scrollActual > ultimoScrollY && scrollActual > 100) {
-        setMostrarMenu(false);
-      } else {
-        setMostrarMenu(true);
-      }
-
-      setUltimoScrollY(scrollActual);
-    };
-
-    window.addEventListener('scroll', manejarScroll, { passive: true });
-    return () => window.removeEventListener('scroll', manejarScroll);
-  }, [ultimoScrollY]);
+  const [resultadosPorPagina, setResultadosPorPagina] = useState(5);
+  const [paginaActual, setPaginaActual] = useState(1);
 
   const reservasEjemplo: Reserva[] = [
     {
@@ -88,6 +68,11 @@ export function PanelEmpresa() {
   const reservasFiltradas = estadoSeleccionado === "todos"
     ? reservasEjemplo
     : reservasEjemplo.filter(r => r.estado === estadoSeleccionado);
+    const totalPaginas = Math.ceil(reservasFiltradas.length / resultadosPorPagina);
+    const indiceInicial = (paginaActual - 1) * resultadosPorPagina;
+    const indiceFinal = indiceInicial + resultadosPorPagina;
+
+    const reservasPagina = reservasFiltradas.slice(indiceInicial, indiceFinal);
 
   const etiquetasEstado: Record<string, string> = {
     "todos": "Todos",
@@ -101,27 +86,6 @@ export function PanelEmpresa() {
   return (
     <div className="min-h-screen relative">
       <FondoBurbujas />
-      <motion.nav
-        className="fixed top-0 left-0 right-0 z-50"
-        initial={{ y: 0 }}
-        animate={{ y: mostrarMenu ? 0 : -100 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-      >
-        <div className="mx-4 my-4 px-6 py-4 backdrop-blur-2xl bg-white/10 border-2 border-white/30 rounded-2xl shadow-[0_8px_32px_rgba(31,38,135,0.15),inset_0_1px_2px_rgba(255,255,255,0.3)]">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => navigate("/")}
-              className="flex items-center gap-2"
-            >
-              <Sparkles className="w-6 h-6 text-[#4facfe]" />
-              <span className="text-xl text-gray-800">Lim-Pieza - Panel</span>
-            </button>
-            <Boton onClick={() => navigate("/")} variante="secundario">
-              Volver al inicio
-            </Boton>
-          </div>
-        </div>
-      </motion.nav>
 
       <div className="pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
@@ -134,7 +98,10 @@ export function PanelEmpresa() {
             {["todos", "Pendiente", "Cotizada", "Confirmada", "Completada", "Cancelada"].map((estado) => (
               <button
                 key={estado}
-                onClick={() => setEstadoSeleccionado(estado)}
+                onClick={() => {
+                  setEstadoSeleccionado(estado);
+                  setPaginaActual(1);
+                }}
                 className={`
                   px-4 py-2 rounded-lg transition-all backdrop-blur-xl border
                   ${estadoSeleccionado === estado
@@ -148,9 +115,43 @@ export function PanelEmpresa() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              {reservasFiltradas.map((reservation) => (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+            <div className="space-y-4 flex flex-col h-full">
+              <Tarjeta className="p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div>
+                    <h2 className="text-gray-800">Reservas</h2>
+                    <p className="text-sm text-gray-600">
+                      Mostrando {indiceInicial + 1} - {Math.min(indiceFinal, reservasFiltradas.length)} de {reservasFiltradas.length}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <label htmlFor="resultadosPorPagina" className="text-sm text-gray-600">
+                      Resultados por página:
+                    </label>
+
+                    <select
+                      id="resultadosPorPagina"
+                      value={resultadosPorPagina}
+                      onChange={(evento) => {
+                        setResultadosPorPagina(Number(evento.target.value));
+                        setPaginaActual(1);
+                      }}
+                      className="px-3 py-2 rounded-xl bg-white/60 border border-white/70 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4facfe]/50"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={15}>15</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
+                </div>
+              </Tarjeta>
+
+              {reservasPagina.map((reservation) => (
+
+
                 <Tarjeta
                   key={reservation.id}
                   hover
@@ -183,55 +184,131 @@ export function PanelEmpresa() {
                   </div>
                 </Tarjeta>
               ))}
-            </div>
+              <Tarjeta className="p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setPaginaActual(paginaActual - 1)}
+                    disabled={paginaActual === 1}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/60 border border-white/70 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/80 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Anterior
+                  </button>
 
-            <div>
-              {reservaSeleccionada ? (
-                <Tarjeta className="p-6 sticky top-24">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-gray-800">Detalles de la Reserva</h2>
-                    <Eye className="w-5 h-5 text-[#4facfe]" />
+                  <span className="text-sm text-gray-600">
+                    Página {paginaActual} de {totalPaginas}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => setPaginaActual(paginaActual + 1)}
+                    disabled={paginaActual === totalPaginas}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/60 border border-white/70 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/80 transition-colors"
+                  >
+                    Siguiente
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </Tarjeta>
+            </div>
+            <div className="h-full">
+              <Tarjeta className="p-6 h-full sticky top-24">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-gray-800">Detalles de la Reserva</h2>
+                  <Eye className="w-5 h-5 text-[#4facfe]" />
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-sm text-gray-600 block mb-1">
+                      Número de reserva
+                    </label>
+                    <p className="text-gray-800">
+                      {reservaSeleccionada?.id ?? "—"}
+                    </p>
                   </div>
 
-                  <div className="space-y-6">
+                  <div>
+                    <label className="text-sm text-gray-600 block mb-1">
+                      Nombre del Cliente
+                    </label>
+                    <p className="text-gray-800">
+                      {reservaSeleccionada?.nombreCliente ?? "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-gray-600 block mb-1">
+                      Tipo de Servicio
+                    </label>
+                    <p className="text-gray-800">
+                      {reservaSeleccionada?.tipoServicio ?? "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-gray-600 block mb-1">
+                      Fecha Solicitada
+                    </label>
+                    <p className="text-gray-800">
+                      {reservaSeleccionada?.fechaSolicitada ?? "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-gray-600 block mb-1">
+                      Dirección
+                    </label>
+                    <p className="text-gray-800">
+                      {reservaSeleccionada?.direccion ?? "—"}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm text-gray-600 block mb-1">Nombre del Cliente</label>
-                      <p className="text-gray-800">{reservaSeleccionada.nombreCliente}</p>
+                      <label className="text-sm text-gray-600 block mb-1">
+                        Teléfono
+                      </label>
+                      <p className="text-gray-800 text-sm">
+                        {reservaSeleccionada?.telefono ?? "—"}
+                      </p>
                     </div>
 
                     <div>
-                      <label className="text-sm text-gray-600 block mb-1">Tipo de Servicio</label>
-                      <p className="text-gray-800">{reservaSeleccionada.tipoServicio}</p>
+                      <label className="text-sm text-gray-600 block mb-1">
+                        Correo
+                      </label>
+                      <p className="text-gray-800 text-sm">
+                        {reservaSeleccionada?.correo ?? "—"}
+                      </p>
                     </div>
+                  </div>
 
-                    <div>
-                      <label className="text-sm text-gray-600 block mb-1">Fecha Solicitada</label>
-                      <p className="text-gray-800">{reservaSeleccionada.fechaSolicitada}</p>
-                    </div>
+                  <div>
+                    <label className="text-sm text-gray-600 block mb-1">
+                      Contacto Preferido
+                    </label>
+                    <p className="text-gray-800">
+                      {reservaSeleccionada?.metodoContacto ?? "—"}
+                    </p>
+                  </div>
 
-                    <div>
-                      <label className="text-sm text-gray-600 block mb-1">Dirección</label>
-                      <p className="text-gray-800">{reservaSeleccionada.direccion}</p>
-                    </div>
+                  <div>
+                    <label className="text-sm text-gray-600 block mb-1">
+                      Urgencia
+                    </label>
+                    <p className="text-gray-800">
+                      {reservaSeleccionada?.urgencia ?? "—"}
+                    </p>
+                  </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm text-gray-600 block mb-1">Teléfono</label>
-                        <p className="text-gray-800 text-sm">{reservaSeleccionada.telefono}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm text-gray-600 block mb-1">Correo</label>
-                        <p className="text-gray-800 text-sm">{reservaSeleccionada.correo}</p>
-                      </div>
-                    </div>
+                  <div>
+                    <label className="text-sm text-gray-600 block mb-2">
+                      Estado
+                    </label>
 
-                    <div>
-                      <label className="text-sm text-gray-600 block mb-1">Contacto Preferido</label>
-                      <p className="text-gray-800">{reservaSeleccionada.metodoContacto}</p>
-                    </div>
-
-                    <div>
-                      <label className="text-sm text-gray-600 block mb-2">Estado</label>
+                    {reservaSeleccionada ? (
                       <select
                         value={reservaSeleccionada.estado}
                         onChange={(e) => {
@@ -248,22 +325,20 @@ export function PanelEmpresa() {
                         <option value="Completada">Completado</option>
                         <option value="Cancelada">Cancelado</option>
                       </select>
-                    </div>
-
-                    <Boton className="w-full">
-                      Actualizar Estado
-                    </Boton>
+                    ) : (
+                      <p className="text-gray-800">—</p>
+                    )}
                   </div>
-                </Tarjeta>
-              ) : (
-                <Tarjeta className="p-12 text-center sticky top-24">
-                  <Eye className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">
-                    Selecciona una reserva para ver los detalles
-                  </p>
-                </Tarjeta>
-              )}
+
+                  <Boton
+                    className={`w-full ${!reservaSeleccionada ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    Actualizar Estado
+                  </Boton>
+                </div>
+              </Tarjeta>
             </div>
+              
           </div>
         </div>
       </div>

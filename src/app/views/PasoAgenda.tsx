@@ -36,8 +36,6 @@ export function PasoAgenda() {
             onClick={() => navigate("/")}
             className="inline-flex items-center gap-2 mb-6"
           >
-            <Sparkles className="w-6 h-6 text-[#4facfe]" />
-            <span className="text-xl text-gray-800">Lim-Pieza</span>
           </button>
         </div>
 

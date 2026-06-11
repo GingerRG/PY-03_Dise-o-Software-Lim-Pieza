@@ -4,8 +4,25 @@ import { Tarjeta } from "../components/Tarjeta";
 import { Boton } from "../components/Boton";
 import { IndicadorPasos } from "../components/IndicadorPasos";
 import { FondoBurbujas } from "../components/FondoBurbujas";
-import { Sparkles, Home, Minus, Plus } from "lucide-react";
+import {
+  Home,
+  Brush,
+  SprayCan,
+  Wind,
+  Droplets,
+  Sparkles,
+  Trash2,
+  Sofa,
+  Car,
+  Bed,
+  CookingPot,
+  Bath,
+  Shirt,
+  Plus,
+  Minus
+} from "lucide-react";
 import { motion } from "motion/react";
+
 
 export function PasoDetalles() {
   const navigate = useNavigate();
@@ -16,15 +33,55 @@ export function PasoDetalles() {
   const [urgencia, setUrgencia] = useState<string>("normal");
 
   const tareasLimpieza = [
-    "Aspirado",
-    "Trapeado",
-    "Limpieza de polvo",
-    "Lavar platos",
-    "Limpieza de baños",
-    "Limpieza de cocina",
-    "Limpieza de alfombras",
-    "Limpieza de ventanas"
-  ];
+  {
+    nombre: "Barrer",
+    icono: Brush
+  },
+  {
+    nombre: "Trapear",
+    icono: Droplets
+  },
+  {
+    nombre: "Aspirar",
+    icono: Wind
+  },
+  {
+    nombre: "Limpiar polvo",
+    icono: Sparkles
+  },
+  {
+    nombre: "Desinfectar",
+    icono: SprayCan
+  },
+  {
+    nombre: "Sacar basura",
+    icono: Trash2
+  },
+  {
+    nombre: "Limpiar cocina",
+    icono: CookingPot
+  },
+  {
+    nombre: "Limpiar baño",
+    icono: Bath
+  },
+  {
+    nombre: "Limpiar muebles",
+    icono: Sofa
+  },
+  {
+    nombre: "Lavar ropa",
+    icono: Shirt
+  },
+  {
+    nombre: "Limpiar colchón",
+    icono: Bed
+  },
+  {
+    nombre: "Limpiar vehículo",
+    icono: Car
+  }
+];
 
   const alternarTarea = (tarea: string) => {
     setTareas((anteriores) =>
@@ -42,16 +99,6 @@ export function PasoDetalles() {
     <div className="min-h-screen py-8 px-4 relative">
       <FondoBurbujas />
       <div className="max-w-4xl mx-auto relative z-10">
-        <div className="text-center mb-8">
-          <button
-            onClick={() => navigate("/")}
-            className="inline-flex items-center gap-2 mb-6"
-          >
-            <Sparkles className="w-6 h-6 text-[#4facfe]" />
-            <span className="text-xl text-gray-800">Lim-Pieza</span>
-          </button>
-        </div>
-
         <IndicadorPasos
           pasoActual={3}
           totalPasos={6}
@@ -148,23 +195,47 @@ export function PasoDetalles() {
             <div>
               <label className="block mb-4 text-sm text-gray-700 font-medium">Tareas Específicas de Limpieza</label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {tareasLimpieza.map((tarea) => (
-                  <motion.button
-                    key={tarea}
-                    onClick={() => alternarTarea(tarea)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`
-                      p-3 rounded-xl text-sm transition-all backdrop-blur-xl border-2
-                      ${tareas.includes(tarea)
-                        ? "bg-white/50 border-[#4facfe] text-gray-800 shadow-[0_4px_12px_rgba(79,172,254,0.2)]"
-                        : "bg-white/25 border-white/50 text-gray-600 hover:bg-white/35 hover:border-white/60"
-                      }
-                    `}
-                  >
-                    {tarea}
-                  </motion.button>
-                ))}
+                {tareasLimpieza.map((tarea) => {
+                  const Icono = tarea.icono;
+                  const estaSeleccionada = tareas.includes(tarea.nombre);
+
+                  return (
+                    <button
+                      key={tarea.nombre}
+                      type="button"
+                      onClick={() => alternarTarea(tarea.nombre)}
+                      aria-pressed={estaSeleccionada}
+                      className={`
+                        flex flex-col items-center justify-center gap-3
+                        min-h-[120px] p-4 rounded-2xl
+                        backdrop-blur-xl border transition-all duration-300
+                        hover:-translate-y-1 hover:shadow-lg
+                        ${
+                          estaSeleccionada
+                            ? "bg-blue-500/20 border-blue-400 text-blue-700 shadow-md"
+                            : "bg-white/50 border-white/70 text-gray-700 hover:bg-white/70"
+                        }
+                      `}
+                    >
+                      <div
+                        className={`
+                          w-12 h-12 rounded-2xl flex items-center justify-center
+                          ${
+                            estaSeleccionada
+                              ? "bg-blue-500 text-white"
+                              : "bg-white/70 text-blue-500"
+                          }
+                        `}
+                      >
+                        <Icono className="w-6 h-6" />
+                      </div>
+
+                      <span className="text-sm font-medium text-center">
+                        {tarea.nombre}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

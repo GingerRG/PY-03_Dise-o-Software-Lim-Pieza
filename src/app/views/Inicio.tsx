@@ -3,31 +3,12 @@ import { Boton } from "../components/Boton";
 import { FondoBurbujas } from "../components/FondoBurbujas";
 import { motion } from "motion/react";
 import { Sparkles, Calendar, Users, Camera, Home, Droplets, Wind, Star, Zap, Clock, Shield } from "lucide-react";
-import { useState, useEffect } from "react";
+import { PiePagina } from "../components/PiePagina";
+
 
 export function Inicio() {
   const navigate = useNavigate();
-  const [mostrarMenu, setMostrarMenu] = useState(true);
-  const [ultimoScrollY, setUltimoScrollY] = useState(0);
-
-  useEffect(() => {
-    const manejarScroll = () => {
-      const scrollActual = window.scrollY;
-
-      if (scrollActual > ultimoScrollY && scrollActual > 100) {
-        // Ocultar menú al bajar después de 100px
-        setMostrarMenu(false);
-      } else {
-        // Mostrar menú al subir
-        setMostrarMenu(true);
-      }
-
-      setUltimoScrollY(scrollActual);
-    };
-
-    window.addEventListener('scroll', manejarScroll, { passive: true });
-    return () => window.removeEventListener('scroll', manejarScroll);
-  }, [ultimoScrollY]);
+ 
 
   const beneficios = [
     {
@@ -96,40 +77,7 @@ export function Inicio() {
       <FondoBurbujas />
       <BurbujasFlotantes />
 
-      <motion.nav
-        className="fixed top-0 left-0 right-0 z-50"
-        initial={{ y: 0 }}
-        animate={{ y: mostrarMenu ? 0 : -100 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-      >
-        <div className="mx-4 my-4 px-6 py-4 backdrop-blur-2xl bg-white/10 border-2 border-white/30 rounded-2xl shadow-[0_8px_32px_rgba(31,38,135,0.15),inset_0_1px_2px_rgba(255,255,255,0.3)]">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              >
-                <Sparkles className="w-6 h-6 text-[#4facfe]" />
-              </motion.div>
-              <span className="text-xl text-gray-800">Lim-Pieza</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => navigate("/servicios")}
-                className="px-4 py-2 rounded-lg backdrop-blur-xl bg-white/15 border border-white/30 text-gray-700 hover:bg-white/25 hover:border-white/40 hover:text-gray-800 transition-all hover:scale-105 active:scale-95"
-              >
-                Servicios
-              </button>
-              <button
-                onClick={() => navigate("/panel")}
-                className="px-4 py-2 rounded-lg backdrop-blur-xl bg-white/15 border border-white/30 text-gray-700 hover:bg-white/25 hover:border-white/40 hover:text-gray-800 transition-all hover:scale-105 active:scale-95"
-              >
-                Panel
-              </button>
-            </div>
-          </div>
-        </div>
-      </motion.nav>
+      
 
       <div className="pt-20 pb-20 px-4 relative z-10">
         <div className="max-w-7xl mx-auto">
@@ -318,6 +266,7 @@ export function Inicio() {
           </motion.div>
         </div>
       </div>
+      <PiePagina />
     </div>
   );
 }

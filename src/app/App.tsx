@@ -13,6 +13,9 @@ import { PasoResumen } from "./views/PasoResumen";
 import { Confirmacion } from "./views/Confirmacion";
 import { PanelEmpresa } from "./views/PanelEmpresa";
 import { BotonAccesibilidad } from "./components/BotonAccesibilidad";
+import { Equipo } from "./views/Equipo";
+import { BarraSuperior } from "./components/BarraSuperior";
+
 
 export default function App() {
   const [reducirMovimiento, setReducirMovimiento] = useState(() => {
@@ -36,6 +39,7 @@ export default function App() {
   return (
     <MotionConfig reducedMotion={reducirMovimiento ? "always" : "user"}>
       <BrowserRouter>
+        <BarraSuperior />
         <BotonAccesibilidad
           reducirMovimiento={reducirMovimiento}
           alCambiar={setReducirMovimiento}
@@ -52,6 +56,7 @@ export default function App() {
           <Route path="/reserva/paso6" element={<PasoResumen />} />
           <Route path="/confirmacion" element={<Confirmacion />} />
           <Route path="/panel" element={<PanelEmpresa />} />
+          <Route path="/equipo" element={<Equipo />} />
         </Routes>
       </BrowserRouter>
     </MotionConfig>
